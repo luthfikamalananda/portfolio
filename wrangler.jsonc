@@ -1,0 +1,10 @@
+// Cloudflare Workers (static assets only): serves the `out/` folder from `pnpm build`.
+// Build command: pnpm build — Deploy command: npx wrangler deploy
+{
+  "name": "portfolio",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}
