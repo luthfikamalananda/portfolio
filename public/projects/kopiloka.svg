@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 550" preserveAspectRatio="xMidYMid slice">
+<defs><radialGradient id="r" cx=".8" cy=".2" r=".9"><stop offset="0" stop-color="#c6f432" stop-opacity=".35"/><stop offset="1" stop-color="#c6f432" stop-opacity="0"/></radialGradient></defs>
+<rect width="880" height="550" fill="#1d2a05"/><rect width="880" height="550" fill="url(#r)"/>
+<g stroke="#c6f432" stroke-opacity=".25" stroke-width="2" fill="none"><path d="M520 80 C620 200 560 320 720 420"/><path d="M460 300 C600 280 700 200 800 240"/><path d="M600 40 L640 520"/></g>
+    <g transform="translate(600 190)"><circle r="22" fill="#c6f432"/><circle r="8" fill="#1d2a05"/></g><g transform="translate(690 320)"><circle r="14" fill="#c6f432"/><circle r="5" fill="#1d2a05"/></g><g transform="translate(540 330)"><circle r="14" fill="#c6f432"/><circle r="5" fill="#1d2a05"/></g><g transform="translate(730 160)"><circle r="14" fill="#c6f432"/><circle r="5" fill="#1d2a05"/></g>
+<text x="60" y="470" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="72" letter-spacing="-3" fill="#c6f432">Kopiloka</text>
+<text x="62" y="80" font-family="monospace" font-size="18" fill="#c6f432" fill-opacity=".6">PLACEHOLDER IMAGE</text>
+</svg>

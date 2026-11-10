@@ -1,0 +1,366 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens. Theme is set by data-theme on <html> (dark default),
+   accent by data-accent. Change accent in src/lib/site.ts.
+   --------------------------------------------------------------------------- */
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b0b0c;
+  --bg-elev: #131315;
+  --surface: #18181b;
+  --line: rgb(255 255 255 / 0.09);
+  --line-strong: rgb(255 255 255 / 0.18);
+  --fg: #f3f2ec;
+  --muted: #a1a19a;
+  --faint: #6b6b66;
+  --on-accent: #0b0b0c;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f4ee;
+  --bg-elev: #ecebe4;
+  --surface: #ffffff;
+  --line: rgb(0 0 0 / 0.09);
+  --line-strong: rgb(0 0 0 / 0.2);
+  --fg: #141413;
+  --muted: #5d5d57;
+  --faint: #8d8d86;
+  --on-accent: #0b0b0c;
+}
+
+/* accent = fills & glows, accent-ink = accent used as text on --bg (contrast-safe) */
+:root,
+[data-accent="lime"] {
+  --accent: #c6f432;
+  --accent-ink: #c6f432;
+}
+[data-theme="light"][data-accent="lime"],
+[data-theme="light"]:not([data-accent]) {
+  --accent: #b8e62a;
+  --accent-ink: #4a6b00;
+}
+
+[data-accent="violet"] {
+  --accent: #8f7bff;
+  --accent-ink: #a796ff;
+  --on-accent: #ffffff;
+}
+[data-theme="light"][data-accent="violet"] {
+  --accent: #5227ff;
+  --accent-ink: #4318e6;
+  --on-accent: #ffffff;
+}
+
+[data-accent="coral"] {
+  --accent: #ff6b3d;
+  --accent-ink: #ff825c;
+}
+[data-theme="light"][data-accent="coral"] {
+  --accent: #ff6b3d;
+  --accent-ink: #b83a12;
+}
+
+[data-accent="cyan"] {
+  --accent: #2de2e6;
+  --accent-ink: #2de2e6;
+}
+[data-theme="light"][data-accent="cyan"] {
+  --accent: #2de2e6;
+  --accent-ink: #0b6f79;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elev: var(--bg-elev);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-on-accent: var(--on-accent);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-bricolage), var(--font-geist-sans), sans-serif;
+  --font-hand: var(--font-caveat), "Comic Sans MS", cursive;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* In a layer so utilities (e.g. focus-visible:outline-none) can override it. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Subtle film grain over the whole page — part of the "not corporate" feel. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.075;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+[data-theme="light"] .grain::after {
+  opacity: 0.07;
+}
+
+@keyframes marquee-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+.blink {
+  animation: marquee-blink 1.4s steps(2, start) infinite;
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.55);
+  backdrop-filter: blur(6px);
+}
+
+/* ---------------------------------------------------------------------------
+   Hero entrance. Lines rise out of their mask; meta fades up. When the intro
+   curtain plays, everything waits for the panels to start leaving.
+   --------------------------------------------------------------------------- */
+@keyframes hero-rise {
+  from {
+    transform: translateY(104%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-rise {
+  animation: hero-rise 1.15s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-delay: var(--d, 0s);
+}
+.hero-fade {
+  animation: hero-fade 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-delay: var(--d, 0s);
+}
+[data-intro="play"] .hero-rise,
+[data-intro="play"] .hero-fade {
+  animation-delay: calc(var(--d, 0s) + 1s);
+}
+
+/* ---------------------------------------------------------------------------
+   Intro curtain — stacked colour panels sweep off to the left, top one first.
+   --------------------------------------------------------------------------- */
+.intro-curtain {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+}
+[data-intro="play"] .intro-curtain {
+  display: block;
+  animation: intro-done 0s linear 2.1s forwards;
+}
+.intro-layer {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  animation: intro-sweep 0.95s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation-delay: calc(0.5s + var(--i) * 0.1s);
+}
+.intro-label {
+  animation: intro-label 0.5s cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+@keyframes intro-sweep {
+  to {
+    transform: translateX(-101%);
+  }
+}
+@keyframes intro-label {
+  from {
+    opacity: 0;
+    letter-spacing: 0.6em;
+  }
+}
+@keyframes intro-done {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Locale switch: the same panels sweep IN from the right (bottom layer first) to cover the page. */
+[data-curtain="cover"] .intro-curtain {
+  display: block;
+  visibility: visible;
+  animation: none;
+}
+[data-curtain="cover"] .intro-layer {
+  transform: translateX(101%);
+  animation: curtain-in 0.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation-delay: calc((2 - var(--i)) * 0.08s);
+}
+@keyframes curtain-in {
+  to {
+    transform: none;
+  }
+}
+
+/* Resume slide-over: colour panels sweep in from the right, then the sheet, then its rows. */
+.slide-over[open] .so-layer {
+  animation: so-in 0.7s cubic-bezier(0.76, 0, 0.24, 1) both;
+  animation-delay: calc(var(--i) * 0.08s);
+}
+.slide-over[open] .so-item {
+  animation: so-item 0.6s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-delay: calc(0.42s + var(--j) * 0.07s);
+}
+@keyframes so-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+/* Closing = the opening in reverse: rows fade, the sheet leaves first, then the colour panels. */
+.slide-over[data-closing] .so-layer {
+  animation: so-out 0.55s cubic-bezier(0.76, 0, 0.24, 1) both;
+  animation-delay: calc((2 - var(--i)) * 0.07s);
+}
+.slide-over[data-closing] .so-item {
+  animation: so-item-out 0.18s ease-in both;
+}
+@keyframes so-out {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes so-item-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.slide-over[open]::backdrop {
+  animation: backdrop-in 0.45s ease both;
+}
+.slide-over[data-closing]::backdrop {
+  animation: backdrop-out 0.6s ease 0.1s both;
+}
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes backdrop-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes so-item {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Page texture (fixed, behind everything). Pattern is masked so it fades out
+   toward the edges; light is a faint accent glow. Kept low-contrast for text.
+   --------------------------------------------------------------------------- */
+:root,
+[data-theme="dark"] {
+  --tex-ink: rgb(255 255 255 / 0.085);
+  /* Masking tape on desk objects: pale on dark, deeper and warmer on light so it never vanishes. */
+  --tape: rgb(236 226 194 / 0.82);
+}
+[data-theme="light"] {
+  --tex-ink: rgb(0 0 0 / 0.085);
+  --tape: rgb(205 184 128 / 0.78);
+}
+.site-texture {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.site-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: radial-gradient(ellipse 120% 90% at 50% 30%, #000 25%, transparent 95%);
+  mask-image: radial-gradient(ellipse 120% 90% at 50% 30%, #000 25%, transparent 95%);
+}
+.site-texture[data-texture="dots"]::before {
+  background-image: radial-gradient(circle, var(--tex-ink) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+.site-texture[data-texture="grid"]::before {
+  background-image:
+    linear-gradient(var(--tex-ink) 1px, transparent 1px),
+    linear-gradient(90deg, var(--tex-ink) 1px, transparent 1px);
+  background-size: 76px 76px;
+  opacity: 0.75;
+}
+.site-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(55% 45% at 88% 0%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 70%),
+    radial-gradient(45% 40% at 0% 100%, color-mix(in oklab, var(--accent) 6%, transparent), transparent 70%);
+}
+
+/* Keyboard navbar: the "?" key glows until the Visitor uses a shortcut once. */
+@keyframes kbd-glow {
+  0%, 100% { box-shadow: 0 4px 0 var(--line-strong), 0 0 0 0 color-mix(in oklab, var(--accent) 0%, transparent); }
+  50% { box-shadow: 0 4px 0 var(--line-strong), 0 0 0 5px color-mix(in oklab, var(--accent) 35%, transparent); }
+}
+.kbd-glow { animation: kbd-glow 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .kbd-glow { animation: none; } }
