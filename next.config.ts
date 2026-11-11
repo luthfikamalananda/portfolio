@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 // See docs/adr/0001-nextjs-static-export.md — this site is ALWAYS a static export.
-// NEXT_PUBLIC_BASE_PATH lets the same build live under a sub-path (GitHub Pages: "/repo-name").
+// NEXT_PUBLIC_BASE_PATH lets the same build live under a sub-path (unused while hosted at a domain root).
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const nextConfig: NextConfig = {

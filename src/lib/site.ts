@@ -57,7 +57,7 @@ export const accentHex: Record<AccentKind, { dark: string; light: string }> = {
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-/** Prefix a public/ asset path with the basePath (needed for GitHub Pages sub-paths). */
+/** Prefix a public/ asset path with the basePath (needed only when hosted under a sub-path). */
 export function asset(path: string): string {
   return `${basePath}${path}`;
 }

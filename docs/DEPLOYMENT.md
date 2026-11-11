@@ -1,6 +1,6 @@
 # Panduan Deployment
 
-Panduan ini ditulis untuk pemula. Bagian 1 menjelaskan konsepnya, bagian 2–4 berisi langkah praktis untuk tiap host. Kita akan melakukan deploy pertama ke **Netlify** bersama-sama.
+Panduan ini ditulis untuk pemula. Bagian 1 menjelaskan konsepnya, bagian 2 menjelaskan setup Cloudflare yang dipakai sekarang, bagian 3 alternatif VPS.
 
 ---
 
@@ -30,7 +30,7 @@ Lihat juga `docs/adr/0001-nextjs-static-export.md` untuk alasan memilih static e
 | **Hosting** | Layanan atau komputer yang menyimpan dan menyajikan file website Anda. |
 | **Domain** | Alamat website, misalnya `luthfiananda.dev`. Dibeli terpisah di registrar (Niagahoster, Namecheap, Cloudflare, dan sebagainya). |
 | **DNS** | "Buku telepon" internet yang mengarahkan domain ke alamat server (IP). Diatur di panel registrar. |
-| **HTTPS / SSL** | Enkripsi (gembok 🔒 di browser). Netlify dan GitHub Pages memberikannya gratis. Di VPS kita pakai Let's Encrypt (juga gratis). |
+| **HTTPS / SSL** | Enkripsi (gembok 🔒 di browser). Cloudflare memberikannya gratis. Di VPS kita pakai Let's Encrypt (juga gratis). |
 | **CI/CD** | Otomatisasi: setiap kali Anda `git push`, layanan menjalankan build dan deploy sendiri. |
 | **basePath** | Sub-folder tempat website berada. Contoh: `username.github.io/portfolio`, dengan `basePath` = `/portfolio`. |
 
@@ -51,52 +51,29 @@ Kalau tampilannya benar di sini, hasilnya akan sama di host mana pun.
 | Variabel | Kegunaan | Contoh |
 |---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | Alamat lengkap website, untuk metadata SEO dan preview link | `https://luthfiananda.dev` |
-| `NEXT_PUBLIC_BASE_PATH` | Hanya untuk GitHub Pages dengan sub-folder | `/portfolio` |
+| `NEXT_PUBLIC_BASE_PATH` | Hanya jika situs berada di sub-folder (tidak dipakai sekarang) | `/portfolio` |
 
 ---
 
-## 2. Netlify (paling mudah, mulai di sini)
+## 2. Cloudflare (yang dipakai sekarang)
 
-Netlify membaca `netlify.toml` di repo ini, jadi hampir tidak ada yang perlu diatur.
+Situs live di **https://lompii.my.id** (dan `portfolio.lompii.my.id`). Domain dibeli di IDwebhost, nameserver-nya diarahkan ke Cloudflare.
 
-1. **Push repo ke GitHub.**
-   ```bash
-   git add .
-   git commit -m "Initial portfolio"
-   git branch -M main
-   git remote add origin https://github.com/<username>/portfolio.git
-   git push -u origin main
-   ```
-2. Login ke [app.netlify.com](https://app.netlify.com) memakai akun GitHub.
-3. Klik **Add new site → Import an existing project → GitHub**, lalu pilih repo `portfolio`.
-4. Netlify otomatis membaca `netlify.toml` (build: `pnpm build`, publish: `out`). Klik **Deploy**.
-5. Tunggu 1–2 menit. Website Anda live di `https://<nama-acak>.netlify.app`.
-6. Ganti nama situs di **Site configuration → Change site name**. Lalu perbarui `NEXT_PUBLIC_SITE_URL` di `netlify.toml` dan push lagi.
+Project-nya bertipe **Workers** (static assets), terhubung ke repo GitHub. Konfigurasinya ada di `wrangler.jsonc`: Cloudflare hanya menyajikan folder `out/`.
 
-Mulai sekarang, **setiap `git push` ke `main` otomatis memicu deploy ulang.** Pull request juga mendapat *deploy preview* dengan URL sendiri.
+| Setting (Workers & Pages → project → Settings → Build) | Isi |
+|---|---|
+| Build command | `pnpm build` |
+| Deploy command | `npx wrangler deploy` |
+| Variabel build | `NEXT_PUBLIC_SITE_URL`, `NODE_VERSION=22` |
 
-**Domain sendiri (opsional):** buka **Domain management → Add a domain**, lalu ikuti instruksi DNS dari Netlify. HTTPS aktif otomatis.
+**CI/CD:** setiap `git push` ke `main` otomatis di-build dan di-deploy (±1–2 menit). Branch lain mendapat preview URL. Log build ada di tab **Deployments**.
+
+**Jangan** pakai preset Next.js / `opennextjs-cloudflare`, karena itu untuk Next mode server, sedangkan situs ini static export.
 
 ---
 
-## 3. GitHub Pages (gratis, langsung dari repo)
-
-Workflow-nya sudah ada di `.github/workflows/deploy-pages.yml`.
-
-1. Push repo ke GitHub (lihat langkah Netlify no. 1).
-2. Di GitHub, buka repo → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Push ke `main`, atau jalankan manual di tab **Actions → Deploy to GitHub Pages → Run workflow**.
-4. Website live di:
-   - `https://<username>.github.io/<nama-repo>/` untuk repo biasa. `basePath` diatur otomatis oleh workflow.
-   - `https://<username>.github.io/` kalau nama repo-nya persis `<username>.github.io`.
-
-**Kenapa ada `.nojekyll`?** GitHub Pages secara default mengabaikan folder berawalan `_`, termasuk `_next/` milik Next.js. File kosong `.nojekyll` mematikan perilaku itu.
-
-**Domain sendiri:** di **Settings → Pages → Custom domain**. Jika memakai domain sendiri di root, `basePath` tidak lagi diperlukan. Ubah baris `NEXT_PUBLIC_BASE_PATH` di workflow menjadi `''`.
-
----
-
-## 4. VPS (kontrol penuh)
+## 3. VPS (alternatif) (kontrol penuh)
 
 VPS adalah komputer Linux sewaan (misalnya di DigitalOcean, Vultr, Biznet Gio, atau IDCloudHost). Kita memasang **Nginx** sebagai web server yang menyajikan folder `out/`.
 
@@ -143,11 +120,11 @@ rsync -avz --delete out/ root@IP_SERVER_ANDA:/var/www/portfolio/
 
 ---
 
-## 5. Troubleshooting singkat
+## 4. Troubleshooting singkat
 
 | Gejala | Kemungkinan penyebab |
 |---|---|
-| Halaman putih / CSS hilang di GitHub Pages | `basePath` salah, atau `.nojekyll` tidak ada. |
+| Build gagal dengan `opennextjs-cloudflare` | Build/deploy command salah, lihat bagian 2. |
 | `/id` menampilkan 404 di VPS | Konfigurasi `try_files` Nginx tidak dipakai. Cek dengan `nginx -t`. |
 | Background hero kosong hanya di `pnpm dev` | Komponen WebGL yang melepas konteksnya saat cleanup akan rusak oleh StrictMode (efek dijalankan dua kali). Komponen di `src/components/reactbits/` sudah di-patch (cari "Local patch"); terapkan patch yang sama bila menambah komponen WebGL baru dari React Bits. |
 | Perubahan tidak muncul setelah deploy | Cache browser. Coba hard refresh (⌘⇧R / Ctrl+Shift+R). |

@@ -44,7 +44,7 @@ src/
 
 - [`GLOSSARY.md`](./GLOSSARY.md): istilah domain (Owner, Section, Journey, Milestone, …)
 - [`docs/adr/`](./docs/adr/): keputusan arsitektur
-- [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md): panduan deploy ke Netlify, GitHub Pages, dan VPS
+- [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md): panduan deploy (Cloudflare, alternatif VPS)
 
 ## Fitur
 
