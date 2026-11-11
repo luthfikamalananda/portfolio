@@ -56,6 +56,10 @@ export interface Project {
   year: string;
   stack: string[];
   image: string;
+  /** Optional variant shown instead of `image` while the dark theme is on. */
+  imageDark?: string;
+  /** For a Project made of several apps: one line per app, shown under the tagline. */
+  parts?: { name: string; detail: string }[];
   featured: boolean;
   links: { live?: string; repo?: string };
 }
@@ -125,7 +129,7 @@ export interface UiCopy {
   };
   about: { eyebrow: string; title: string; latestEducation: string; photoCaption: string };
   skills: { eyebrow: string; title: string; intro: string };
-  projects: { eyebrow: string; title: string; intro: string; more: string; live: string; repo: string };
+  projects: { eyebrow: string; title: string; intro: string; more: string; /** Toggle for a Project's apps; `{n}` = how many. */ parts: string; live: string; repo: string };
   journey: { eyebrow: string; title: string; kinds: Record<MilestoneKind, string> };
   beyond: {
     eyebrow: string;

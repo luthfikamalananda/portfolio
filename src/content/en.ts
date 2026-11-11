@@ -2,7 +2,7 @@
 import type { SiteContent } from "./types";
 import { owner, projectBase, skills } from "./shared";
 
-const projectText: Record<string, { tagline: string; role: string }> = {
+const projectText: Record<string, { tagline: string; role: string; parts?: { name: string; detail: string }[] }> = {
   tessera: {
     tagline:
       "A micro-frontend travel booking platform — bus, flight, hotel, KAI & European rail, ferry, PELNI and attractions — for corporates (B2B) and consumers via Tessera Lifestyle, live inside GoPay. I led the move to Next.js Multi-Zones and built per-corporate white-label branding with CSS design tokens, dark mode and a custom i18n hook.",
@@ -10,22 +10,46 @@ const projectText: Record<string, { tagline: string; role: string }> = {
   },
   retroppies: {
     tagline:
-      "A multi-tenant photobooth franchise system: an Electron kiosk (QRIS payment, photo + video capture, WebGL filters, borderless A6 printing, iOS-ready MP4 via ffmpeg, auto-update with rollback), a tenant dashboard with analytics, and a no-login PWA where guests grab their photos by QR code.",
+      "A photobooth franchise system for vintage cafés, built as three apps on one Go backend — the kiosk guests use, the dashboard each café runs, and the page where guests pick up their photos.",
     role: "Freelance · sole frontend engineer",
+    parts: [
+      {
+        name: "Kiosk · Electron",
+        detail: "A fullscreen touchscreen kiosk on Windows: pick a package, pay by QRIS or cash, shoot 4 photos plus clips, lay them on a template, pick a filter, then print borderless (A4/A6) and send results by QR and email. GIF and iOS-ready MP4 via ffmpeg; one-file installer and updater.",
+      },
+      {
+        name: "Café dashboard · React + MUI",
+        detail: "Multi-tenant admin: each café manages its products, photo templates, timers and vouchers, and tracks revenue and transactions; superadmins switch between tenants. Page access follows backend permissions.",
+      },
+      {
+        name: "Result viewer · PWA",
+        detail: "Guests scan the QR to view and download their photo frame, 4 raw photos, GIF and video — no login, the session code is the key, kept for 7 days.",
+      },
+    ],
   },
   "membership-parkir": {
     tagline:
-      "A mobile-first web app for selling and renewing parking memberships, live at Kawasan Industri Maspion, Gresik — QRIS, Virtual Account and card payments, role-based tenant quotas and signed requests. One of the products growing the Parking unit's service-fee revenue.",
+      "A mobile-first web app that parking operators use to register and renew members on-site, live at Kawasan Industri Maspion, Gresik. Find a member by plate, card or phone; scan their prepaid card over NFC; pay by QRIS, Virtual Account or card (with re-issue for pending payments); then sync the member to the parking system. Free vs. paid members and per-tenant quotas follow each operator's role, with signed requests and encrypted local state. One of the products growing the Parking unit's service-fee revenue.",
     role: "Main author · ~97% of commits",
   },
   "udbm-widgets": {
     tagline:
-      "A library of 50+ embeddable React widgets other teams install into the UDBM dashboard. I built the Parking widgets: transaction and shift reports, member cards, approvals and analytics.",
+      "A library of 45+ self-contained React widgets, built with Babel and installed as a package into the UDBM dashboard, which mounts each one and feeds it merchant data and permissions through props. I'm the main author of its 20 Parking widgets: transaction reports by shift and period, members and member cards, cancel approvals, re-sync and re-settle of transactions, tenant management and analytics — with Excel export.",
     role: "Frontend · Parking widgets",
+  },
+  filmqu: {
+    tagline:
+      "A movie review community: browse films from TMDB, rate them out of 10, write reviews, keep favourites and visit other members' profiles. An installable PWA on Firebase.",
+    role: "Coursework",
+  },
+  "spl-ut": {
+    tagline:
+      "An overtime-order (SPL) system: employees file requests, approvers sign off in turn or reject with a reason, and approved orders print as PDF.",
+    role: "Coursework",
   },
   "reforma-trash": {
     tagline:
-      "A web marketplace for buying and selling recyclable waste. Won Best Capstone Project at Dicoding's MSIB Batch 3, and later became my published undergraduate thesis.",
+      "A marketplace for buying and selling recyclable waste, with guides on sorting and recycling it. Won Best Capstone Project at Dicoding's MSIB Batch 3 and later became my published thesis.",
     role: "Team lead · team of 4",
   },
 };
@@ -253,6 +277,7 @@ export const en: SiteContent = {
       title: "Selected work",
       intro: "A few things I've designed, built and shipped.",
       more: "More things I've made",
+      parts: "{n} apps in this system",
       live: "Live",
       repo: "Code",
     },

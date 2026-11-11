@@ -4,6 +4,7 @@ import type { SiteContent } from "@/content";
 import type { Project } from "@/content/types";
 import { asset } from "@/lib/site";
 import { Card } from "../Card";
+import { ProjectParts } from "../ProjectParts";
 import { Section } from "./Section";
 
 function ProjectLinks({ project, ui }: { project: Project; ui: SiteContent["ui"] }) {
@@ -45,18 +46,27 @@ function Stack({ items }: { items: string[] }) {
   );
 }
 
+/** The Project's poster; with `imageDark`, CSS swaps in the dark variant so the pre-paint theme applies without a flash. */
+function ProjectImage({ project }: { project: Project }) {
+  const cls = "absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]";
+  return (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element -- static export, images are pre-sized SVG/PNG */}
+      <img src={asset(project.image)} alt="" loading="lazy" className={`${cls} ${project.imageDark ? "[[data-theme=dark]_&]:hidden" : ""}`} />
+      {project.imageDark && (
+        // eslint-disable-next-line @next/next/no-img-element -- static export
+        <img src={asset(project.imageDark)} alt="" loading="lazy" className={`${cls} hidden [[data-theme=dark]_&]:block`} />
+      )}
+    </>
+  );
+}
+
 function FeaturedCard({ project, ui, wide }: { project: Project; ui: SiteContent["ui"]; wide?: boolean }) {
   return (
     <Card className={`group rounded-3xl ${wide ? "md:col-span-2" : ""}`}>
       <article className={`flex h-full flex-col ${wide ? "md:grid md:grid-cols-[1.4fr_1fr]" : ""}`}>
         <div className={`relative overflow-hidden ${wide ? "aspect-[16/10] md:aspect-auto md:min-h-[380px]" : "aspect-[16/10]"}`}>
-          {/* eslint-disable-next-line @next/next/no-img-element -- static export, images are pre-sized SVG/PNG */}
-          <img
-            src={asset(project.image)}
-            alt=""
-            loading="lazy"
-            className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-          />
+          <ProjectImage project={project} />
         </div>
         <div className="flex flex-1 flex-col gap-4 p-6 md:p-8">
           <p className="flex items-center justify-between font-mono text-xs text-muted">
@@ -65,6 +75,7 @@ function FeaturedCard({ project, ui, wide }: { project: Project; ui: SiteContent
           </p>
           <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">{project.title}</h3>
           <p className="text-muted">{project.tagline}</p>
+          {project.parts && <ProjectParts parts={project.parts} label={ui.projects.parts.replace("{n}", String(project.parts.length))} />}
           <div className="mt-auto flex flex-col gap-5 pt-2">
             <Stack items={project.stack} />
             <ProjectLinks project={project} ui={ui} />
@@ -84,7 +95,7 @@ export function Projects({ content }: { content: SiteContent }) {
     <Section id="projects" index="03" eyebrow={ui.projects.eyebrow} title={ui.projects.title} intro={ui.projects.intro}>
       <div className="grid gap-5 md:grid-cols-2">
         {featured.map((p, i) => (
-          <FeaturedCard key={p.slug} project={p} ui={ui} wide={i === 0} />
+          <FeaturedCard key={p.slug} project={p} ui={ui} wide={i === 0 || (i === featured.length - 1 && (featured.length - 1) % 2 === 1)} />
         ))}
       </div>
 
@@ -98,8 +109,11 @@ export function Projects({ content }: { content: SiteContent }) {
                 href={href}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex h-full flex-col gap-3 rounded-2xl border border-line bg-surface/40 p-5 transition-colors hover:border-accent"
+                className="group flex h-full flex-col gap-3 overflow-hidden rounded-2xl border border-line bg-surface/40 p-5 transition-colors hover:border-accent"
               >
+                <div className="relative -mx-5 -mt-5 mb-2 aspect-[16/10] overflow-hidden border-b border-line">
+                  <ProjectImage project={p} />
+                </div>
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="font-mono text-xs text-muted">{p.year}</p>

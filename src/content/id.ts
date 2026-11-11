@@ -2,7 +2,7 @@
 import type { SiteContent } from "./types";
 import { owner, projectBase, skills } from "./shared";
 
-const projectText: Record<string, { tagline: string; role: string }> = {
+const projectText: Record<string, { tagline: string; role: string; parts?: { name: string; detail: string }[] }> = {
   tessera: {
     tagline:
       "Platform pemesanan tiket travel berbasis micro-frontend — bus, pesawat, hotel, KAI & kereta Eropa, kapal ferry, PELNI, dan wisata — untuk korporat (B2B) dan konsumen lewat Tessera Lifestyle yang sudah live di GoPay. Saya memimpin migrasi ke Next.js Multi-Zones dan membangun white-label branding per korporat dengan CSS design token, dark mode, serta custom hook i18n.",
@@ -10,22 +10,46 @@ const projectText: Record<string, { tagline: string; role: string }> = {
   },
   retroppies: {
     tagline:
-      "Sistem photobooth franchise multi-tenant: kiosk Electron (bayar QRIS, foto + video, filter WebGL, cetak A6 borderless, MP4 ramah iOS via ffmpeg, auto-update dengan rollback), dashboard tenant dengan analitik, dan PWA tanpa login untuk tamu mengambil foto lewat QR code.",
+      "Sistem photobooth franchise untuk cafe bertema vintage, terdiri dari tiga aplikasi di atas satu backend Go: kiosk yang dipakai tamu, dashboard yang dikelola tiap cafe, dan halaman tempat tamu mengambil fotonya.",
     role: "Freelance · satu-satunya frontend engineer",
+    parts: [
+      {
+        name: "Kiosk · Electron",
+        detail: "Kiosk touchscreen fullscreen di Windows: pilih paket, bayar QRIS atau tunai, ambil 4 foto beserta klip video, susun ke template, pilih filter, lalu cetak borderless (A4/A6) dan kirim hasil lewat QR dan email. GIF dan MP4 ramah iOS via ffmpeg; installer sekaligus updater satu file.",
+      },
+      {
+        name: "Dashboard cafe · React + MUI",
+        detail: "Admin multi-tenant: tiap cafe mengatur produk, template foto, timer, dan voucher, serta memantau revenue dan transaksi; superadmin bisa berpindah antar-tenant. Akses halaman mengikuti permission dari backend.",
+      },
+      {
+        name: "Result viewer · PWA",
+        detail: "Tamu memindai QR untuk melihat dan mengunduh frame foto, 4 foto mentah, GIF, dan video — tanpa login, kode sesi jadi kuncinya, tersedia 7 hari.",
+      },
+    ],
   },
   "membership-parkir": {
     tagline:
-      "Web app mobile-first untuk penjualan dan perpanjangan membership parkir, sudah live di Kawasan Industri Maspion, Gresik — pembayaran QRIS, Virtual Account, dan kartu kredit, kuota tenant berbasis role, serta request yang di-sign. Salah satu produk yang menaikkan pendapatan service fee BU Parkir.",
+      "Web app mobile-first yang dipakai operator parkir untuk mendaftarkan dan memperpanjang member langsung di lokasi, sudah live di Kawasan Industri Maspion, Gresik. Cari member lewat plat nomor, kartu, atau nomor telepon; pindai kartu prepaid lewat NFC; bayar via QRIS, Virtual Account, atau kartu kredit (dengan buat ulang tagihan untuk pembayaran yang tertunda); lalu sinkronkan member ke sistem parkir. Member gratis vs. berbayar dan kuota per tenant mengikuti peran operator, dengan request yang di-sign dan state lokal terenkripsi. Salah satu produk yang menaikkan pendapatan service fee BU Parkir.",
     role: "Penulis utama · ~97% commit",
   },
   "udbm-widgets": {
     tagline:
-      "Library berisi 50+ widget React yang di-install tim lain ke dashboard UDBM. Saya membangun widget Parkir: laporan transaksi dan shift, kartu member, approval, dan analitik.",
+      "Library berisi 45+ widget React mandiri, di-build dengan Babel dan di-install sebagai package ke dashboard UDBM, yang memasang tiap widget dan mengirim data merchant serta permission lewat props. Saya penulis utama 20 widget Parkir-nya: laporan transaksi per shift dan periode, member dan kartu member, approval pembatalan, sinkron dan settle ulang transaksi, manajemen tenant, serta analitik — lengkap dengan ekspor Excel.",
     role: "Frontend · widget Parkir",
+  },
+  filmqu: {
+    tagline:
+      "Komunitas review film: jelajahi film dari TMDB, beri nilai 1–10, tulis review, simpan favorit, dan lihat profil member lain. PWA yang bisa di-install, dengan Firebase.",
+    role: "Tugas kuliah",
+  },
+  "spl-ut": {
+    tagline:
+      "Sistem Surat Perintah Lembur (SPL): karyawan mengajukan, approver menyetujui secara berjenjang atau menolak dengan alasan, lalu SPL yang disetujui dicetak sebagai PDF.",
+    role: "Tugas kuliah",
   },
   "reforma-trash": {
     tagline:
-      "Marketplace web untuk jual beli sampah daur ulang. Memenangkan Best Capstone Project di MSIB Batch 3 Dicoding, lalu menjadi skripsi saya yang terbit di jurnal.",
+      "Marketplace untuk jual beli sampah daur ulang, lengkap dengan panduan memilah dan mendaur ulangnya. Memenangkan Best Capstone Project di MSIB Batch 3 Dicoding, lalu menjadi skripsi saya yang terbit di jurnal.",
     role: "Ketua tim · 4 orang",
   },
 };
@@ -253,6 +277,7 @@ export const id: SiteContent = {
       title: "Karya pilihan",
       intro: "Beberapa hal yang saya rancang, bangun, dan rilis.",
       more: "Karya lainnya",
+      parts: "{n} aplikasi dalam sistem ini",
       live: "Live",
       repo: "Kode",
     },

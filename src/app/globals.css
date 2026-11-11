@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Design tokens. Theme is set by data-theme on <html> (dark default),
+   Design tokens. Theme is set by data-theme on <html> (saved choice, else the OS preference; set in RootShell),
    accent by data-accent. Change accent in src/lib/site.ts.
    --------------------------------------------------------------------------- */
 

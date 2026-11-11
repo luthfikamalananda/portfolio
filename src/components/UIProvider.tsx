@@ -89,7 +89,7 @@ function setUrlParam(key: string, value: string) {
 }
 
 export function UIProvider({ content, children }: { content: SiteContent; children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
   const [party, setParty] = useState(false);
@@ -114,7 +114,7 @@ export function UIProvider({ content, children }: { content: SiteContent; childr
   useEffect(() => {
     const applied = document.documentElement.getAttribute("data-theme");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time sync with pre-paint DOM state
-    if (applied === "light") setTheme("light");
+    if (applied === "dark") setTheme("dark");
     if (!isDev) return;
     const params = new URLSearchParams(window.location.search);
     const a = params.get("accent");
